@@ -6,14 +6,16 @@ class Reservation < ApplicationRecord
   validates :date, presence: true
   validates :time, presence: true, format: { with: /\A([01]\d|2[0-3]):([0-5]\d)\z/, message: "must be in the format HH:MM" }
   validates :observations, allow_nil: true, length: { maximum: 500 }
+  validates :table, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 50 }
 
-  validate :unique_date_and_time
+  before_validation :set_random_table, on: :create
 
   private
 
-  def unique_date_and_time
-    if Reservation.exists?(date: date, time: time)
-      errors.add(:base, "A reservation already exists for the same date and time")
+  def set_random_table
+    self.table ||= begin
+      available_tables = (1..50).to_a - Reservation.where(date: date, time: time).pluck(:table)
+      available_tables.sample || (raise "No available tables for the selected date and time")
     end
   end
 end
