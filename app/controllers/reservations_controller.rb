@@ -2,11 +2,11 @@ class ReservationsController < ApplicationController
   # before_action :set_reservation, only: %i[ show update destroy ]
 
   # GET /reservations
-  def index
-    @reservations = Reservation.all
+  # def index
+  #   @reservations = Reservation.all
 
-    render json: @reservations
-  end
+  #   render json: @reservations
+  # end
 
   # GET /reservations/1
   # def show
