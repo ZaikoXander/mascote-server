@@ -13,9 +13,14 @@ class Reservation < ApplicationRecord
   private
 
   def set_random_table
-    self.table ||= begin
-      available_tables = (1..50).to_a - Reservation.where(date: date, time: time).pluck(:table)
-      available_tables.sample || (raise "No available tables for the selected date and time")
+    return if table.present?
+
+    available_tables = (1..50).to_a - Reservation.where(date: date, time: time).pluck(:table)
+    self.table = available_tables.sample
+
+    if self.table.nil?
+      errors.add(:table, "No available tables for the selected date and time")
+      throw(:abort)
     end
   end
 end
