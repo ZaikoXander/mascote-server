@@ -1,0 +1,36 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: CI
+    runs-on: ubuntu-latest
+    container:
+      image: ruby:3.3.4
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up npm
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22'
+
+      - uses: a7ul/tar-action@v1.1.0
+        with:
+          command: c
+          cwd: "./"
+          files: |
+            .
+          outPath: deploy.tar
+
+      - name: Install caprover
+        run: npm install -g caprover
+
+      - name: Caprover Deploy
+        run: caprover deploy -h '${{ vars.CAPROVER_SERVER }}' -p '${{ secrets.CAPROVER_PASSWORD }}' -t 'deploy.tar' -a '${{ vars.CAPROVER_APP }}'
