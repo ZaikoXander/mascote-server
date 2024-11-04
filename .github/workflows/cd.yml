@@ -10,7 +10,7 @@ jobs:
     name: CI
     runs-on: ubuntu-latest
     container:
-      image: ruby:3.3.4
+      image: ruby:3.3.5
 
     steps:
       - name: Checkout code
