@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  mount_devise_token_auth_for "Admin", at: "auth"
+  mount_devise_token_auth_for "Admin", at: "auth", controllers: {
+    registrations: "authenticated_admin/registrations"
+  }
   resources :messages
   resources :reservations
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
